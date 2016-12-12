@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 
 import { observer } from 'mobx-react'
 
+import { form2js } from 'form2js'
+
 import stores from '/stores'
 
 const { patterns } = stores
@@ -30,7 +32,7 @@ class index extends Component {
           sourcePattern,
           targetPattern,
           ...pattern,
-        }) => <form key={_id} onSubmit={onSubmit}>
+        }) => <form key={_id} onSubmit={(e) => onSubmit(e, _id) } id={`form-pattern-${_id}`}>
         <input type="text" name='name' defaultValue={name}/>
         <input type="text" name='sourcePattern' defaultValue={sourcePattern}/>
         <input type="text" name='targetPattern' defaultValue={targetPattern}/>
@@ -42,8 +44,18 @@ class index extends Component {
   }
 }
 
-function onSubmit(e) {
+function onSubmit(e, _id) {
   e.preventDefault()
+  const form = e.currentTarget
+  const opt = form2js(form.id)
+  const data = {
+    name: opt.name,
+    sourcePattern: opt.sourcePattern,
+    targetPattern: opt.targetPattern,
+  }
+  patterns.db.update({ _id }, { $set: data }, (err, resp) => {
+    !err && refetch()
+  })
 }
 
 function remove(_id) {

@@ -21783,10 +21783,19 @@
 	exports.default = function () {
 	  return _react2.default.createElement(
 	    'div',
-	    null,
-	    'menu'
+	    { className: 'ui-menu' },
+	    _react2.default.createElement(
+	      'div',
+	      { onClick: openOptionsPage },
+	      '\u8BBE\u7F6E'
+	    )
 	  );
 	};
+
+	function openOptionsPage() {
+	  var url = 'chrome://extensions/?options=' + chrome.runtime.id;
+	  chrome.tabs.create({ url: url });
+	}
 
 /***/ },
 /* 184 */
@@ -53551,6 +53560,8 @@
 
 	var _mobxReact = __webpack_require__(218);
 
+	var _form2js = __webpack_require__(214);
+
 	var _stores = __webpack_require__(185);
 
 	var _stores2 = _interopRequireDefault(_stores);
@@ -53607,7 +53618,9 @@
 
 	          return _react2.default.createElement(
 	            'form',
-	            { key: _id, onSubmit: onSubmit },
+	            { key: _id, onSubmit: function onSubmit(e) {
+	                return _onSubmit(e, _id);
+	              }, id: 'form-pattern-' + _id },
 	            _react2.default.createElement('input', { type: 'text', name: 'name', defaultValue: name }),
 	            _react2.default.createElement('input', { type: 'text', name: 'sourcePattern', defaultValue: sourcePattern }),
 	            _react2.default.createElement('input', { type: 'text', name: 'targetPattern', defaultValue: targetPattern }),
@@ -53625,8 +53638,18 @@
 	  return index;
 	}(_react.Component)) || _class;
 
-	function onSubmit(e) {
+	function _onSubmit(e, _id) {
 	  e.preventDefault();
+	  var form = e.currentTarget;
+	  var opt = (0, _form2js.form2js)(form.id);
+	  var data = {
+	    name: opt.name,
+	    sourcePattern: opt.sourcePattern,
+	    targetPattern: opt.targetPattern
+	  };
+	  patterns.db.update({ _id: _id }, { $set: data }, function (err, resp) {
+	    !err && (0, _refetch2.default)();
+	  });
 	}
 
 	function remove(_id) {
