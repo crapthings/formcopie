@@ -1,0 +1,12 @@
+{
+  "presets": [
+    "latest",
+    "stage-0",
+    "react"
+  ],
+
+  "plugins": [
+    "babel-root-slash-import",
+    "transform-decorators-legacy"
+  ]
+}

@@ -1,0 +1,25 @@
+body {
+  font-size: 14px;
+}
+
+.ui-flex-row {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.ui-flex-column {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+#app {
+  width: 300px;
+}
+
+.ui-menu {
+  width: 200px;
+}
+
+.ui-list {
+  margin-bottom: 100px;
+}
