@@ -36,7 +36,7 @@ class index extends Component {
         <input type="text" name='name' defaultValue={name}/>
         <input type="text" name='sourcePattern' defaultValue={sourcePattern}/>
         <input type="text" name='targetPattern' defaultValue={targetPattern}/>
-        <input type="hidden" name={sheetId} defaultValue={sheetId} />
+        <input type="hidden" name='sheetId' defaultValue={sheetId} />
         <input type="submit" value='更新' />
         <input type="button" value='删除' onClick={() => remove(_id)} />
       </form>)}

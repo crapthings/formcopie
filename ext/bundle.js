@@ -49460,6 +49460,8 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _form2js = __webpack_require__(214);
+
 	var _mobxReact = __webpack_require__(218);
 
 	var _stores = __webpack_require__(185);
@@ -49526,23 +49528,23 @@
 	              name
 	            ),
 	            _react2.default.createElement(
-	              'button',
-	              { onClick: function onClick() {
+	              'form',
+	              { onSubmit: function onSubmit(e) {
+	                  return _onSubmit(e, _id);
+	                }, id: 'form-sheet-' + _id },
+	              _react2.default.createElement('input', { type: 'text', name: 'name', defaultValue: name }),
+	              _react2.default.createElement('input', { type: 'text', name: 'sourceUrl', defaultValue: sourceUrl }),
+	              _react2.default.createElement('input', { type: 'text', name: 'targetUrl', defaultValue: targetUrl }),
+	              _react2.default.createElement('input', { type: 'hidden', name: '_id', defaultValue: _id }),
+	              _react2.default.createElement('input', { type: 'submit', value: '\u66F4\u65B0' }),
+	              _react2.default.createElement('input', { type: 'button', value: '\u5220\u9664', onClick: function onClick() {
 	                  return remove(_id);
-	                } },
-	              '\u5220\u9664'
+	                } })
 	            ),
 	            _react2.default.createElement(
-	              'p',
+	              'h4',
 	              null,
-	              '\u6E90 url: ',
-	              sourceUrl
-	            ),
-	            _react2.default.createElement(
-	              'p',
-	              null,
-	              '\u76EE\u6807 url: ',
-	              targetUrl
+	              '\u65B9\u6848'
 	            ),
 	            _react2.default.createElement(_pattern2.default, { sheetId: _id })
 	          );
@@ -49553,6 +49555,20 @@
 
 	  return index;
 	}(_react.Component)) || _class;
+
+	function _onSubmit(e, _id) {
+	  e.preventDefault();
+	  var form = e.currentTarget;
+	  var opt = (0, _form2js.form2js)(form.id);
+	  var data = {
+	    name: opt.name,
+	    sourceUrl: opt.sourceUrl,
+	    targetUrl: opt.targetUrl
+	  };
+	  sheets.db.update({ _id: _id }, { $set: data }, function (err, resp) {
+	    !err && (0, _refetch2.default)();
+	  });
+	}
 
 	function remove(_id) {
 	  confirm('确定要删除吗？') && _.each([sheets, patterns], function (store) {
@@ -53624,7 +53640,7 @@
 	            _react2.default.createElement('input', { type: 'text', name: 'name', defaultValue: name }),
 	            _react2.default.createElement('input', { type: 'text', name: 'sourcePattern', defaultValue: sourcePattern }),
 	            _react2.default.createElement('input', { type: 'text', name: 'targetPattern', defaultValue: targetPattern }),
-	            _react2.default.createElement('input', { type: 'hidden', name: sheetId, defaultValue: sheetId }),
+	            _react2.default.createElement('input', { type: 'hidden', name: 'sheetId', defaultValue: sheetId }),
 	            _react2.default.createElement('input', { type: 'submit', value: '\u66F4\u65B0' }),
 	            _react2.default.createElement('input', { type: 'button', value: '\u5220\u9664', onClick: function onClick() {
 	                return remove(_id);

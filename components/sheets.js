@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 
+import { form2js } from 'form2js'
+
 import { observer } from 'mobx-react'
 
 import stores from '/stores'
@@ -25,13 +27,33 @@ class index extends Component {
     return <div>
       {sheets.store.list.map(({ _id, name, sourceUrl, targetUrl, ...sheet }) => <div key={_id} className='ui-list'>
         <h4>{name}</h4>
-        <button onClick={() => remove(_id)}>删除</button>
-        <p>源 url: {sourceUrl}</p>
-        <p>目标 url: {targetUrl}</p>
+        <form onSubmit={(e) => onSubmit(e, _id)} id={`form-sheet-${_id}`}>
+          <input type="text" name='name' defaultValue={name}/>
+          <input type="text" name='sourceUrl' defaultValue={sourceUrl}/>
+          <input type="text" name='targetUrl' defaultValue={targetUrl}/>
+          <input type="hidden" name='_id' defaultValue={_id} />
+          <input type="submit" value='更新' />
+          <input type="button" value='删除' onClick={() => remove(_id)} />
+        </form>
+        <h4>方案</h4>
         <PatternFormComponent sheetId={_id} />
       </div>)}
     </div>
   }
+}
+
+function onSubmit(e, _id) {
+  e.preventDefault()
+  const form = e.currentTarget
+  const opt = form2js(form.id)
+  const data = {
+    name: opt.name,
+    sourceUrl: opt.sourceUrl,
+    targetUrl: opt.targetUrl,
+  }
+  sheets.db.update({ _id }, { $set: data }, (err, resp) => {
+    !err && refetch()
+  })
 }
 
 function remove(_id) {
