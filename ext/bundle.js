@@ -21773,24 +21773,102 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.default = undefined;
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _class;
 
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _mobxReact = __webpack_require__(218);
+
+	var _stores = __webpack_require__(185);
+
+	var _stores2 = _interopRequireDefault(_stores);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	exports.default = function () {
-	  return _react2.default.createElement(
-	    'div',
-	    { className: 'ui-menu' },
-	    _react2.default.createElement(
-	      'div',
-	      { onClick: openOptionsPage },
-	      '\u8BBE\u7F6E'
-	    )
-	  );
-	};
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var menu = _stores2.default.menu;
+
+	var index = (0, _mobxReact.observer)(_class = function (_Component) {
+	  _inherits(index, _Component);
+
+	  function index() {
+	    _classCallCheck(this, index);
+
+	    return _possibleConstructorReturn(this, (index.__proto__ || Object.getPrototypeOf(index)).apply(this, arguments));
+	  }
+
+	  _createClass(index, [{
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'ui-menu' },
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          menu.store.url
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { onClick: test },
+	          '\u6D4B\u8BD5'
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { onClick: openOptionsPage },
+	          '\u8BBE\u7F6E'
+	        )
+	      );
+	    }
+	  }]);
+
+	  return index;
+	}(_react.Component)) || _class;
+
+	exports.default = index;
+
+
+	chrome.runtime.onMessage.addListener(function (request, sender) {
+	  if (request.action == "getSource") {
+	    console.log(request, sender);
+	  }
+	});
+
+	function test() {
+	  // chrome
+	  //   .tabs
+	  //   .query({ 'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT }, tabs => {
+	  //     menu.store.url = tabs[0].url
+	  //     const a = document.querySelector('#test')
+	  //     menu.store.url = a
+	  //     console.log(a)
+	  //   })
+
+	  // chrome.runtime.sendMessage({
+	  // action: "getSource",
+	  // source: 111,
+	  // })
+
+	  chrome.tabs.executeScript(null, {
+	    file: "exec.js"
+	  }, function () {
+	    // If you try and inject into an extensions page or the webstore/NTP you'll get an error
+	    if (chrome.runtime.lastError) {
+	      console.log(1);
+	    }
+	  });
+	}
 
 	function openOptionsPage() {
 	  var url = 'chrome://extensions/?options=' + chrome.runtime.id;
@@ -21835,6 +21913,11 @@
 	  return _react2.default.createElement(
 	    'div',
 	    null,
+	    _react2.default.createElement(
+	      'div',
+	      { id: 'test' },
+	      'wowowowo'
+	    ),
 	    _react2.default.createElement(_action2.default, null),
 	    _react2.default.createElement(_sheet2.default, null),
 	    _react2.default.createElement(_sheets2.default, null)
@@ -21859,11 +21942,16 @@
 
 	var _patterns2 = _interopRequireDefault(_patterns);
 
+	var _menu = __webpack_require__(225);
+
+	var _menu2 = _interopRequireDefault(_menu);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = {
 	  sheets: _sheets2.default,
-	  patterns: _patterns2.default
+	  patterns: _patterns2.default,
+	  menu: _menu2.default
 	};
 
 /***/ },
@@ -53763,6 +53851,91 @@
 	};
 
 	exports.default = FormComponent;
+
+/***/ },
+/* 225 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _desc, _value, _class, _descriptor;
+
+	var _mobx = __webpack_require__(219);
+
+	var _nedb = __webpack_require__(187);
+
+	var _nedb2 = _interopRequireDefault(_nedb);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _initDefineProp(target, property, descriptor, context) {
+	  if (!descriptor) return;
+	  Object.defineProperty(target, property, {
+	    enumerable: descriptor.enumerable,
+	    configurable: descriptor.configurable,
+	    writable: descriptor.writable,
+	    value: descriptor.initializer ? descriptor.initializer.call(context) : void 0
+	  });
+	}
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+	  var desc = {};
+	  Object['ke' + 'ys'](descriptor).forEach(function (key) {
+	    desc[key] = descriptor[key];
+	  });
+	  desc.enumerable = !!desc.enumerable;
+	  desc.configurable = !!desc.configurable;
+
+	  if ('value' in desc || desc.initializer) {
+	    desc.writable = true;
+	  }
+
+	  desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+	    return decorator(target, property, desc) || desc;
+	  }, desc);
+
+	  if (context && desc.initializer !== void 0) {
+	    desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+	    desc.initializer = undefined;
+	  }
+
+	  if (desc.initializer === void 0) {
+	    Object['define' + 'Property'](target, property, desc);
+	    desc = null;
+	  }
+
+	  return desc;
+	}
+
+	function _initializerWarningHelper(descriptor, context) {
+	  throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
+	}
+
+	var db = new _nedb2.default({
+	  filename: '../menu',
+	  autoload: true
+	});
+
+	var store = (_class = function store() {
+	  _classCallCheck(this, store);
+
+	  _initDefineProp(this, 'url', _descriptor, this);
+	}, (_descriptor = _applyDecoratedDescriptor(_class.prototype, 'url', [_mobx.observable], {
+	  enumerable: true,
+	  initializer: function initializer() {
+	    return 'undefined';
+	  }
+	})), _class);
+	exports.default = {
+	  db: db,
+	  store: new store()
+	};
 
 /***/ }
 /******/ ]);
