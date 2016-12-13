@@ -24,8 +24,8 @@ const FormEvents = {
 
 const FormComponent = () => <form id="sheet-form" onSubmit={FormEvents.onSubmit}>
   <input type="text" name="name" placeholder="名称" required />
-  <input type="url" name="sourceUrl" placeholder="源url" required />
-  <input type="url" name="targetUrl" placeholder="目标url" required />
+  <input type="text" name="sourceUrl" placeholder="源url" required />
+  <input type="text" name="targetUrl" placeholder="目标url" required />
   <input type="submit" value="创建" />
 </form>
 

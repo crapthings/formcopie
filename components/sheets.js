@@ -10,6 +10,8 @@ const { sheets, patterns } = stores
 
 import PatternFormComponent from './form/pattern'
 
+import PatternListComp from './patterns'
+
 import refetch from '/methods/refetch'
 
 @observer
@@ -37,6 +39,7 @@ class index extends Component {
         </form>
         <h4>方案</h4>
         <PatternFormComponent sheetId={_id} />
+        <PatternListComp parentId={_id} />
       </div>)}
     </div>
   }

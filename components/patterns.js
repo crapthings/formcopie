@@ -24,6 +24,7 @@ class index extends Component {
   }
 
   render() {
+    const { parentId } = this.props
     return <div>
       {patterns.store.list.map(({
           _id,
@@ -32,14 +33,16 @@ class index extends Component {
           sourcePattern,
           targetPattern,
           ...pattern,
-        }) => <form key={_id} onSubmit={(e) => onSubmit(e, _id) } id={`form-pattern-${_id}`}>
-        <input type="text" name='name' defaultValue={name}/>
-        <input type="text" name='sourcePattern' defaultValue={sourcePattern}/>
-        <input type="text" name='targetPattern' defaultValue={targetPattern}/>
-        <input type="hidden" name='sheetId' defaultValue={sheetId} />
-        <input type="submit" value='更新' />
-        <input type="button" value='删除' onClick={() => remove(_id)} />
-      </form>)}
+        }) => {
+        return parentId === sheetId && <form key={_id} onSubmit={(e) => onSubmit(e, _id) } id={`form-pattern-${_id}`}>
+          <input type="text" name='name' defaultValue={name}/>
+          <input type="text" name='sourcePattern' defaultValue={sourcePattern}/>
+          <input type="text" name='targetPattern' defaultValue={targetPattern}/>
+          <input type="hidden" name='sheetId' defaultValue={sheetId} />
+          <input type="submit" value='更新' />
+          <input type="button" value='删除' onClick={() => remove(_id)} />
+        </form>
+      })}
     </div>
   }
 }

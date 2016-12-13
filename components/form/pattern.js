@@ -8,8 +8,6 @@ const { patterns } = stores
 
 import refetch from '/methods/refetch'
 
-import PatternListComp from '../patterns'
-
 export default ({ sheetId }) => <div>
   <form onSubmit={onSubmit} id={`form-pattern-${sheetId}`}>
     <input type="text" name='name' placeholder='名称' required />
@@ -18,7 +16,6 @@ export default ({ sheetId }) => <div>
     <input type="hidden" name='sheetId' defaultValue={sheetId} />
     <input type="submit" value='新建' />
   </form>
-  <PatternListComp />
 </div>
 
 function onSubmit(e) {
