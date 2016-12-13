@@ -38,7 +38,7 @@ class index extends Component {
           <input type="button" value='删除' onClick={() => remove(_id)} />
         </form>
         <h4>方案</h4>
-        <PatternFormComponent sheetId={_id} />
+        <PatternFormComponent parentId={_id} />
         <PatternListComp parentId={_id} />
       </div>)}
     </div>

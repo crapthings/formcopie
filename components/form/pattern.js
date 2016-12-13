@@ -8,12 +8,12 @@ const { patterns } = stores
 
 import refetch from '/methods/refetch'
 
-export default ({ sheetId }) => <div>
-  <form onSubmit={onSubmit} id={`form-pattern-${sheetId}`}>
+export default ({ parentId }) => <div>
+  <form onSubmit={onSubmit} id={`form-pattern-${parentId}`}>
     <input type="text" name='name' placeholder='名称' required />
     <input type="text" name='sourcePattern' placeholder='源选择器' required />
     <input type="text" name='targetPattern' placeholder='目标选择器' required />
-    <input type="hidden" name='sheetId' defaultValue={sheetId} />
+    <input type="hidden" name='sheetId' defaultValue={parentId} />
     <input type="submit" value='新建' />
   </form>
 </div>
