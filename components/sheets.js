@@ -18,7 +18,7 @@ import refetch from '/methods/refetch'
 class index extends Component {
   constructor() {
     super()
-    sheets.db.loadDatabase(err => {    // Callback is optional
+    sheets.db.loadDatabase(err => {
       sheets.db.find({}, (err, findResp) => {
         sheets.store.list = findResp
       })
@@ -27,7 +27,7 @@ class index extends Component {
 
   render() {
     return <div>
-      {sheets.store.list.map(({ _id, name, sourceUrl, targetUrl, ...sheet }) => <div key={_id} className='ui-list'>
+      {sheets.store.list.map(({ _id, name, sourceUrl, targetUrl, content, ...sheet }) => <div key={_id} className='ui-list'>
         <h4>{name}</h4>
         <form onSubmit={(e) => onSubmit(e, _id)} id={`form-sheet-${_id}`}>
           <input type="text" name='name' defaultValue={name}/>
@@ -38,6 +38,7 @@ class index extends Component {
           <input type="button" value='删除' onClick={() => remove(_id)} />
         </form>
         <h4>方案</h4>
+        <p>{content && JSON.stringify(content)}</p>
         <PatternFormComponent parentId={_id} />
         <PatternListComp parentId={_id} />
       </div>)}

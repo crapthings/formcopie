@@ -24,6 +24,14 @@ export default class index extends Component {
 chrome.runtime.onMessage.addListener(function(request, sender) {
   if (request.action == "getSource") {
     console.log(request.source)
+    const _id = request.source.___sheetId
+    sheets.db.update({ _id }, {
+      $set: {
+        content: request.source
+      }
+    }, (err, resp) => {
+      console.log(err, resp)
+    })
   }
 })
 
@@ -39,7 +47,8 @@ function test() {
         _.each(resp, r => {
           // 比较一下 url，这里可以写一些复杂的匹配方式
           if (url.includes(r.sourceUrl)) {
-            patterns.db.find({ sheetId: r._id }, (err, pattern) => {
+            const sheetId = r._id
+            patterns.db.find({ sheetId }, (err, pattern) => {
               _.each(pattern, (v, k) => {
                 query[v.name] = v.sourcePattern
               })
@@ -48,10 +57,10 @@ function test() {
 
               chrome.tabs.executeScript(null, {
                 code: `
-                  var results = {}
+                  var results = { ___sheetId: '${sheetId}' }
                   var queryStr = ${queryStr}
                   for (var q in queryStr) {
-                    var dom = document.querySelector(queryStr[q])
+                    var dom = document.querySelector(queryStr[q]) || {}
                     var result = dom.value || dom.innerText
                     results[q] = result
                   }

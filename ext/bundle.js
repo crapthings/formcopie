@@ -21852,6 +21852,14 @@
 	chrome.runtime.onMessage.addListener(function (request, sender) {
 	  if (request.action == "getSource") {
 	    console.log(request.source);
+	    var _id = request.source.___sheetId;
+	    sheets.db.update({ _id: _id }, {
+	      $set: {
+	        content: request.source
+	      }
+	    }, function (err, resp) {
+	      console.log(err, resp);
+	    });
 	  }
 	});
 
@@ -21865,22 +21873,25 @@
 	      _lodash2.default.each(resp, function (r) {
 	        // 比较一下 url，这里可以写一些复杂的匹配方式
 	        if (url.includes(r.sourceUrl)) {
-	          patterns.db.find({ sheetId: r._id }, function (err, pattern) {
-	            _lodash2.default.each(pattern, function (v, k) {
-	              query[v.name] = v.sourcePattern;
-	            });
+	          (function () {
+	            var sheetId = r._id;
+	            patterns.db.find({ sheetId: sheetId }, function (err, pattern) {
+	              _lodash2.default.each(pattern, function (v, k) {
+	                query[v.name] = v.sourcePattern;
+	              });
 
-	            var queryStr = JSON.stringify(query);
+	              var queryStr = JSON.stringify(query);
 
-	            chrome.tabs.executeScript(null, {
-	              code: '\n                  var results = {}\n                  var queryStr = ' + queryStr + '\n                  for (var q in queryStr) {\n                    var dom = document.querySelector(queryStr[q])\n                    var result = dom.value || dom.innerText\n                    results[q] = result\n                  }\n                  chrome.runtime.sendMessage({\n                    action: \'getSource\',\n                    source: results\n                  })\n                '
-	            }, function () {
-	              // If you try and inject into an extensions page or the webstore/NTP you'll get an error
-	              if (chrome.runtime.lastError) {
-	                console.log(1);
-	              }
+	              chrome.tabs.executeScript(null, {
+	                code: '\n                  var results = { ___sheetId: \'' + sheetId + '\' }\n                  var queryStr = ' + queryStr + '\n                  for (var q in queryStr) {\n                    var dom = document.querySelector(queryStr[q]) || {}\n                    var result = dom.value || dom.innerText\n                    results[q] = result\n                  }\n                  chrome.runtime.sendMessage({\n                    action: \'getSource\',\n                    source: results\n                  })\n                '
+	              }, function () {
+	                // If you try and inject into an extensions page or the webstore/NTP you'll get an error
+	                if (chrome.runtime.lastError) {
+	                  console.log(1);
+	                }
+	              });
 	            });
-	          });
+	          })();
 	        }
 	      });
 	    });
@@ -53661,7 +53672,6 @@
 	    var _this = _possibleConstructorReturn(this, (index.__proto__ || Object.getPrototypeOf(index)).call(this));
 
 	    sheets.db.loadDatabase(function (err) {
-	      // Callback is optional
 	      sheets.db.find({}, function (err, findResp) {
 	        sheets.store.list = findResp;
 	      });
@@ -53680,7 +53690,8 @@
 	              name = _ref.name,
 	              sourceUrl = _ref.sourceUrl,
 	              targetUrl = _ref.targetUrl,
-	              sheet = _objectWithoutProperties(_ref, ['_id', 'name', 'sourceUrl', 'targetUrl']);
+	              content = _ref.content,
+	              sheet = _objectWithoutProperties(_ref, ['_id', 'name', 'sourceUrl', 'targetUrl', 'content']);
 
 	          return _react2.default.createElement(
 	            'div',
@@ -53708,6 +53719,11 @@
 	              'h4',
 	              null,
 	              '\u65B9\u6848'
+	            ),
+	            _react2.default.createElement(
+	              'p',
+	              null,
+	              content && JSON.stringify(content)
 	            ),
 	            _react2.default.createElement(_pattern2.default, { parentId: _id }),
 	            _react2.default.createElement(_patterns2.default, { parentId: _id })
