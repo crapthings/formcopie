@@ -15,7 +15,8 @@ export default class index extends Component {
   render() {
     return <div className='ui-menu'>
       <div>{menu.store.url}</div>
-      <div onClick={test}>测试</div>
+      <div onClick={test1}>抓</div>
+      <div onClick={test2}>粘</div>
       <div onClick={openOptionsPage}>设置</div>
     </div>
   }
@@ -35,7 +36,7 @@ chrome.runtime.onMessage.addListener(function(request, sender) {
   }
 })
 
-function test() {
+function test1() {
 
   const query = {}
 
@@ -68,6 +69,49 @@ function test() {
                     action: 'getSource',
                     source: results
                   })
+                `
+              }, function() {
+                // If you try and inject into an extensions page or the webstore/NTP you'll get an error
+                if (chrome.runtime.lastError) {
+                  console.log(1)
+                }
+              })
+            })
+          }
+        })
+      })
+    })
+}
+
+function test2() {
+
+  const query = {}
+
+  chrome
+    .tabs
+    .query({ 'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT }, tabs => {
+      const url = tabs[0].url
+      sheets.db.find({}, (err, resp) => {
+        _.each(resp, r => {
+          // 比较一下 url，这里可以写一些复杂的匹配方式
+          if (url.includes(r.targetUrl)) {
+            const sheetId = r._id
+            const sheet = JSON.stringify(r.content)
+            patterns.db.find({ sheetId }, (err, pattern) => {
+              _.each(pattern, (v, k) => {
+                query[v.name] = v.targetPattern
+              })
+
+              const queryStr = JSON.stringify(query)
+
+              chrome.tabs.executeScript(null, {
+                code: `
+                  var sheet = ${sheet}
+                  var queryStr = ${queryStr}
+                  for (var q in queryStr) {
+                    var dom = document.querySelector(queryStr[q]) || {}
+                    dom.value = sheet[q]
+                  }
                 `
               }, function() {
                 // If you try and inject into an extensions page or the webstore/NTP you'll get an error

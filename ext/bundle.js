@@ -21831,8 +21831,13 @@
 	        ),
 	        _react2.default.createElement(
 	          'div',
-	          { onClick: test },
-	          '\u6D4B\u8BD5'
+	          { onClick: test1 },
+	          '\u6293'
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { onClick: test2 },
+	          '\u7C98'
 	        ),
 	        _react2.default.createElement(
 	          'div',
@@ -21863,7 +21868,7 @@
 	  }
 	});
 
-	function test() {
+	function test1() {
 
 	  var query = {};
 
@@ -21884,6 +21889,42 @@
 
 	              chrome.tabs.executeScript(null, {
 	                code: '\n                  var results = { ___sheetId: \'' + sheetId + '\' }\n                  var queryStr = ' + queryStr + '\n                  for (var q in queryStr) {\n                    var dom = document.querySelector(queryStr[q]) || {}\n                    var result = dom.value || dom.innerText\n                    results[q] = result\n                  }\n                  chrome.runtime.sendMessage({\n                    action: \'getSource\',\n                    source: results\n                  })\n                '
+	              }, function () {
+	                // If you try and inject into an extensions page or the webstore/NTP you'll get an error
+	                if (chrome.runtime.lastError) {
+	                  console.log(1);
+	                }
+	              });
+	            });
+	          })();
+	        }
+	      });
+	    });
+	  });
+	}
+
+	function test2() {
+
+	  var query = {};
+
+	  chrome.tabs.query({ 'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT }, function (tabs) {
+	    var url = tabs[0].url;
+	    sheets.db.find({}, function (err, resp) {
+	      _lodash2.default.each(resp, function (r) {
+	        // 比较一下 url，这里可以写一些复杂的匹配方式
+	        if (url.includes(r.targetUrl)) {
+	          (function () {
+	            var sheetId = r._id;
+	            var sheet = JSON.stringify(r.content);
+	            patterns.db.find({ sheetId: sheetId }, function (err, pattern) {
+	              _lodash2.default.each(pattern, function (v, k) {
+	                query[v.name] = v.targetPattern;
+	              });
+
+	              var queryStr = JSON.stringify(query);
+
+	              chrome.tabs.executeScript(null, {
+	                code: '\n                  var sheet = ' + sheet + '\n                  var queryStr = ' + queryStr + '\n                  for (var q in queryStr) {\n                    var dom = document.querySelector(queryStr[q]) || {}\n                    dom.value = sheet[q]\n                  }\n                '
 	              }, function () {
 	                // If you try and inject into an extensions page or the webstore/NTP you'll get an error
 	                if (chrome.runtime.lastError) {
